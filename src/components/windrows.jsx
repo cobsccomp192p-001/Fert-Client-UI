@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { forwardRef } from "react";
 import Avatar from "react-avatar";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 
 import MaterialTable from "material-table";
@@ -18,7 +18,7 @@ import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
-import moreDetails from "@material-ui/icons/Details"
+import moreDetails from "@material-ui/icons/Details";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import axios from "axios";
@@ -56,15 +56,21 @@ const feedstock = axios.create({
   baseURL: `http://localhost:5000/feedstock`,
 });
 
+const batches = axios.create({
+  baseURL: `http://localhost:5000/batch`,
+});
+
 function App() {
-  const [fdata, fsetData] = useState([]);
+  const [fdata, fsetData] = useState([]); //feedback data 
+  const [batchdata, batchsetData] = useState([]); //batch data 
+
   var columns = [
     { title: "id", field: "_id", hidden: true },
 
     {
       title: "WNO",
       field: "WNO",
-      editable: "onAdd",
+      editable: "never",
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -79,6 +85,7 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup: batchdata,
     },
     {
       title: "FLevel1",
@@ -96,6 +103,7 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup: fdata,
     },
     {
       title: "FLevel3",
@@ -104,6 +112,7 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup: fdata,
     },
     {
       title: "FLevel4",
@@ -112,6 +121,7 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup: fdata,
     },
     {
       title: "FLevel5",
@@ -120,6 +130,7 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup: fdata,
     },
     {
       title: "Start_Date",
@@ -131,21 +142,50 @@ function App() {
       },
     },
     {
-      title: "status",
+      title: "Status",
       field: "status",
+      initialEditValue:1,
+      editable: "never",
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup:{1:'Fresh',2:'Mesophilic',3:'Thermophilic',4:'Maturation',5:'Stable'},
+      cellStyle: (e, rowData) => {
+        if (rowData.status===1) {
+          return { backgroundColor: "#B2EC12" };
+        }
+        if(rowData.status===2){
+          return { backgroundColor: "#F78806" };
+        }
+        if(rowData.status===3){
+          return { backgroundColor: "#FF4E2F" };
+        }
+        if(rowData.status===4){
+          return { backgroundColor: "#8B4C10" };
+        }
+        if(rowData.status===5){
+          return { backgroundColor: "#000",color:"#fff" };
+        }
+      },
     },
   ];
   const [data, setData] = useState([]); //table data
-  const history  = useHistory()
+  const history = useHistory();
   //for error handling
   const [iserror, setIserror] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
 
   useEffect(() => {
+    api
+      .get("/getall")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log("Error");
+      });
+
     feedstock
       .get("/getall")
       .then((res) => {
@@ -159,10 +199,16 @@ function App() {
       .catch((error) => {
         console.log("Error");
       });
-    api
+
+    batches
       .get("/getall")
       .then((res) => {
-        setData(res.data);
+        var mappingData = {};
+        res.data.forEach((k) => {
+          mappingData[k.BNO] = k.BNO;
+        });
+        console.log(mappingData);
+        batchsetData(mappingData);
       })
       .catch((error) => {
         console.log("Error");
@@ -272,21 +318,22 @@ function App() {
               title="Windrow Management"
               columns={columns}
               data={data}
-              actions={
-                [
-                  {
-                    icon: moreDetails,
-                    tooltip: 'More',
-                    onClick: (event, rowData) =>history.push({pathname:"windrowDetails/"+rowData._id,state:rowData})
-                  }
-                ]
-              }
+              actions={[
+                {
+                  icon: moreDetails,
+                  tooltip: "More",
+                  onClick: (event, rowData) =>
+                    history.push({
+                      pathname: "windrowDetails/" + rowData._id,
+                      state: rowData,
+                    }),
+                },
+              ]}
               options={{
                 grouping: true,
               }}
               icons={tableIcons}
               editable={{
-                
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve) => {
                     UpdateRow(newData, oldData, resolve);

@@ -3,7 +3,6 @@ import { forwardRef } from "react";
 import Avatar from "react-avatar";
 import Grid from "@material-ui/core/Grid";
 
-
 import MaterialTable from "material-table";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -64,43 +63,17 @@ function App() {
       },
     },
     {
-        title: "FNO",
-        field: "FNO",
-        editable: 'never',
-        headerStyle: {
-          backgroundColor: "#00994d",
-          color: "#FFF",
-        },
+      title: "FNO",
+      field: "FNO",
+      editable: "never",
+      headerStyle: {
+        backgroundColor: "#00994d",
+        color: "#FFF",
       },
-    {
-        title: "BNO",
-        field: "BNO",
-        editable: 'onAdd',
-        defaultGroupOrder: 0,
-        headerStyle: {
-          backgroundColor: "#00994d",
-          color: "#FFF",
-        },
-      },
+    },
     {
       title: "Name",
       field: "Name",
-      headerStyle: {
-        backgroundColor: "#00994d",
-        color: "#FFF",
-      },
-    },
-    {
-      title: "Quantity",
-      field: "Quantity",
-      headerStyle: {
-        backgroundColor: "#00994d",
-        color: "#FFF",
-      },
-    },
-    {
-      title: "Supplier",
-      field: "Supplier",
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -113,6 +86,22 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      defaultGroupOrder: 0,
+      lookup: {
+        1: "Agriculture waste",
+        2: "Animal waste",
+        3: "Food waste",
+        4: "Enhancer",
+      },
+    },
+    {
+      title: "Supplier",
+      field: "Supplier",
+      headerStyle: {
+        backgroundColor: "#00994d",
+        color: "#FFF",
+      },
+      lookup: { 1: "Private", 2: "Government" },
     },
   ];
   const [data, setData] = useState([]); //table data
@@ -135,11 +124,11 @@ function App() {
   const AddRow = (newData, resolve) => {
     //validation
     let errorList = [];
-    if (newData.BNO === undefined) {
-      errorList.push("Please enter Batch No");
-    }
     if (newData.Name === undefined) {
       errorList.push("Please enter Name");
+    }
+    if (newData.Type === undefined) {
+      errorList.push("Please enter Type");
     }
 
     if (errorList.length < 1) {
@@ -182,15 +171,14 @@ function App() {
       errorList.push("Please enter Name");
     }
     if (newData.Quantity === "") {
-        errorList.push("Please enter Quantity");
+      errorList.push("Please enter Quantity");
     }
     if (newData.Supplier === "") {
-        errorList.push("Please enter Supplier");
+      errorList.push("Please enter Supplier");
     }
     if (newData.Type === "") {
-        errorList.push("Please enter Type");
+      errorList.push("Please enter Type");
     }
-    
 
     if (errorList.length < 1) {
       api
@@ -253,7 +241,7 @@ function App() {
               columns={columns}
               data={data}
               options={{
-                grouping: true
+                grouping: true,
               }}
               icons={tableIcons}
               editable={{
@@ -261,10 +249,10 @@ function App() {
                   new Promise((resolve) => {
                     UpdateRow(newData, oldData, resolve);
                   }),
-                  onRowAdd: (newData) =>
-                    new Promise((resolve) => {
-                      AddRow(newData, resolve);
-                    }),
+                onRowAdd: (newData) =>
+                  new Promise((resolve) => {
+                    AddRow(newData, resolve);
+                  }),
                 onRowDelete: (oldData) =>
                   new Promise((resolve) => {
                     DeleteRow(oldData, resolve);

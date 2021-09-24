@@ -61,6 +61,7 @@ function App() {
       title: "Batch code",
       field: "BNO",
       editable: 'onAdd',
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -74,10 +75,20 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
+      lookup:{0:'Ongoing',1:'Completed'},
+      cellStyle: (e, rowData) => {
+        if (rowData.status==0) {
+          return { backgroundColor: "#BBEC12" };
+        }
+        else{
+          return { backgroundColor: "#EC9312" };
+        }
+      },
     },
     {
       title: "No of active windrows",
-      field: "noOfActiveWindrows",
+      field: "NoOfActiveWin",
+      filtering: false,
       searchable: false,
       headerStyle: {
         backgroundColor: "#00994d",
@@ -86,7 +97,8 @@ function App() {
     },
     {
       title: "No of comp. windrows",
-      field: "noOfCompWindrows",
+      field: "NoOfCompletedWin",
+      filtering: false,
       searchable: false,
       headerStyle: {
         backgroundColor: "#00994d",
@@ -96,6 +108,7 @@ function App() {
     {
       title: "Tot output",
       field: "output",
+      filtering: false,
       searchable: false,
       headerStyle: {
         backgroundColor: "#00994d",
@@ -105,6 +118,7 @@ function App() {
     {
       title: "Start date",
       field: "startDate",
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -280,6 +294,9 @@ function App() {
                     new Promise((resolve) => {
                       DeleteRow(oldData, resolve);
                     }),
+                }}
+                options={{
+                  filtering: true
                 }}
               />
             </Grid>
