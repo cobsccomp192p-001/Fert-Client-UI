@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 import Avatar from "react-avatar";
 import { useHistory } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
+import CustomDatePicker from "./CustomDatePicker";
 
 import MaterialTable from "material-table";
 import AddBox from "@material-ui/icons/AddBox";
@@ -61,8 +62,8 @@ const batches = axios.create({
 });
 
 function App() {
-  const [fdata, fsetData] = useState([]); //feedback data 
-  const [batchdata, batchsetData] = useState([]); //batch data 
+  const [fdata, fsetData] = useState([]); //feedback data
+  const [batchdata, batchsetData] = useState([]); //batch data
 
   var columns = [
     { title: "id", field: "_id", hidden: true },
@@ -71,6 +72,7 @@ function App() {
       title: "WNO",
       field: "WNO",
       editable: "never",
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -80,6 +82,7 @@ function App() {
       title: "BNO",
       field: "BNO",
       editable: "onAdd",
+      filtering: false,
       defaultGroupOrder: 0,
       headerStyle: {
         backgroundColor: "#00994d",
@@ -90,6 +93,8 @@ function App() {
     {
       title: "FLevel1",
       field: "FLevel1",
+      searchable:false,
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -99,6 +104,8 @@ function App() {
     {
       title: "FLevel2",
       field: "FLevel2",
+      searchable:false,
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -108,6 +115,8 @@ function App() {
     {
       title: "FLevel3",
       field: "FLevel3",
+      searchable:false,
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -117,6 +126,8 @@ function App() {
     {
       title: "FLevel4",
       field: "FLevel4",
+      searchable:false,
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -126,6 +137,8 @@ function App() {
     {
       title: "FLevel5",
       field: "FLevel5",
+      searchable:false,
+      filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -135,6 +148,10 @@ function App() {
     {
       title: "Start_Date",
       field: "Start_Date",
+      searchable:false,
+      type: "date",
+      dateSetting: { locale: "en-GB" },
+      filterComponent: (props) => <CustomDatePicker {...props} />,
       editable: "never",
       headerStyle: {
         backgroundColor: "#00994d",
@@ -144,29 +161,88 @@ function App() {
     {
       title: "Status",
       field: "status",
-      initialEditValue:1,
+      filtering: false,
+      initialEditValue: 1,
       editable: "never",
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
-      lookup:{1:'Fresh',2:'Mesophilic',3:'Thermophilic',4:'Maturation',5:'Stable'},
-      cellStyle: (e, rowData) => {
-        if (rowData.status===1) {
-          return { backgroundColor: "#B2EC12" };
-        }
-        if(rowData.status===2){
-          return { backgroundColor: "#F78806" };
-        }
-        if(rowData.status===3){
-          return { backgroundColor: "#FF4E2F" };
-        }
-        if(rowData.status===4){
-          return { backgroundColor: "#8B4C10" };
-        }
-        if(rowData.status===5){
-          return { backgroundColor: "#000",color:"#fff" };
-        }
+      lookup: {
+        1: (
+          <div>
+            <button
+              type="button"
+              class="btn btn"
+              style={{ backgroundColor: "#B2EC12" }}
+            >
+              Fresh
+            </button>
+          </div>
+        ),
+        2: (
+          <div>
+            <button
+              type="button"
+              class="btn btn"
+              style={{ backgroundColor: "#F78806" }}
+            >
+              Mesophilic
+            </button>
+          </div>
+        ),
+        3: (
+          <div>
+            <button
+              type="button"
+              class="btn btn"
+              style={{ backgroundColor: "#FF4E2F" }}
+            >
+              Thermophilic
+            </button>
+          </div>
+        ),
+        4: (
+          <div>
+            <button
+              type="button"
+              class="btn btn"
+              style={{ backgroundColor: "#8B4C10" }}
+            >
+              Maturation
+            </button>
+          </div>
+        ),
+        5: (
+          <div>
+            <button
+              type="button"
+              class="btn btn"
+              style={{ backgroundColor: "#000", color: "#fff" }}
+            >
+              Stable
+            </button>
+          </div>
+        ),
+      },
+    },
+    {
+      title: "Probe No",
+      field: "probeNo",
+      filtering: false,
+      headerStyle: {
+        backgroundColor: "#00994d",
+        color: "#FFF",
+      },
+    },
+    {
+      title: "Turn",
+      field: "turn",
+      lookup: {0: 0,1: 1,2: 2,3: 3},
+      filtering: true,
+      headerStyle: {
+        backgroundColor: "#00994d",
+        color: "#FFF",
       },
     },
   ];
@@ -301,7 +377,8 @@ function App() {
   };
 
   return (
-    <div className="container mt-5">
+    
+    <div className="container-fluid" style={{marginTop:"50px"}}>
       <div className="App">
         <Grid container spacing={50}>
           <Grid item xs={12}>
@@ -331,6 +408,8 @@ function App() {
               ]}
               options={{
                 grouping: true,
+                filtering: true,
+                exportButton: true,
               }}
               icons={tableIcons}
               editable={{

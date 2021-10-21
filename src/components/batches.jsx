@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 import Avatar from "react-avatar";
 import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
+import CustomDatePicker from "./CustomDatePicker";
 
 import MaterialTable from "material-table";
 import AddBox from "@material-ui/icons/AddBox";
@@ -53,14 +54,14 @@ const api = axios.create({
   baseURL: `http://localhost:5000/batch`,
 });
 
-function App() {
+function App(props) {
   var columns = [
     { title: "id", field: "_id", hidden: true },
 
     {
       title: "Batch code",
       field: "BNO",
-      editable: 'onAdd',
+      editable: "onAdd",
       filtering: false,
       headerStyle: {
         backgroundColor: "#00994d",
@@ -75,15 +76,19 @@ function App() {
         backgroundColor: "#00994d",
         color: "#FFF",
       },
-      lookup:{0:'Ongoing',1:'Completed'},
-      cellStyle: (e, rowData) => {
-        if (rowData.status==0) {
-          return { backgroundColor: "#BBEC12" };
-        }
-        else{
-          return { backgroundColor: "#EC9312" };
-        }
+      lookup: {
+        0: "Ongoing",
+        1: "Completed",
       },
+
+      // cellStyle: (e, rowData) => {
+      //   if (rowData.status==0) {
+      //     return { backgroundColor: "#BBEC12" };
+      //   }
+      //   else{
+      //     return { backgroundColor: "#EC9312" };
+      //   }
+      // },
     },
     {
       title: "No of active windrows",
@@ -118,7 +123,9 @@ function App() {
     {
       title: "Start date",
       field: "startDate",
-      filtering: false,
+      type: "date",
+      dateSetting: { locale: "en-GB" },
+      filterComponent: (props) => <CustomDatePicker {...props} />,
       headerStyle: {
         backgroundColor: "#00994d",
         color: "#FFF",
@@ -260,18 +267,27 @@ function App() {
                               <button type="button" class="btn btn-secondary">
                                 {Fdata.WNO}
                               </button>
-                              {Fdata.status==1 ? <button type="button" class="btn btn-success">
-                                Status- Fresh
-                              </button>:(Fdata.status==2 ? <button type="button" class="btn btn-warning">
-                                Status- Mesophilic
-                              </button>:(Fdata.status==3 ? <button type="button" class="btn btn-danger">
-                                Status- Thermophilic
-                              </button>:(Fdata.status==4 ? <button type="button" class="btn btn-secondary">
-                                Status- Maturation
-                              </button>:<button type="button" class="btn btn-dark">
-                                Status- Stable
-                              </button>)))}
-                              
+                              {Fdata.status == 1 ? (
+                                <button type="button" class="btn btn-success">
+                                  Status- Fresh
+                                </button>
+                              ) : Fdata.status == 2 ? (
+                                <button type="button" class="btn btn-warning">
+                                  Status- Mesophilic
+                                </button>
+                              ) : Fdata.status == 3 ? (
+                                <button type="button" class="btn btn-danger">
+                                  Status- Thermophilic
+                                </button>
+                              ) : Fdata.status == 4 ? (
+                                <button type="button" class="btn btn-secondary">
+                                  Status- Maturation
+                                </button>
+                              ) : (
+                                <button type="button" class="btn btn-dark">
+                                  Status- Stable
+                                </button>
+                              )}
                             </div>
                             <p></p>
                           </div>
@@ -296,7 +312,8 @@ function App() {
                     }),
                 }}
                 options={{
-                  filtering: true
+                  filtering: true,
+                  exportButton: true,
                 }}
               />
             </Grid>

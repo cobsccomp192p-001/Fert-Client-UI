@@ -242,6 +242,7 @@ function App() {
               data={data}
               options={{
                 grouping: true,
+                exportButton: true
               }}
               icons={tableIcons}
               editable={{

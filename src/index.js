@@ -18,5 +18,5 @@ ReactDOM.render(<BrowserRouter>
     <Route exact path="/windrows" component={Windrows}/>
     <Route exact path="/feedstock" component={Feedstock}/>
     
-    <Footer/>
+    {/* <Footer/> */}
     </BrowserRouter>,document.getElementById("root"));
