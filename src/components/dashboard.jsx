@@ -48,14 +48,14 @@ class Dashboard extends Component {
 
           <Link
             className="col-sm-6"
-            to="/users"
+            to="/feedstock"
             style={{ textDecoration: "none" }}
           >
             <div className="card text-center text-white bg-secondary mt-5">
               <div className="card-body" id="link">
-                <h5 className="card-title">Sensor Network</h5>
+                <h5 className="card-title">Feedstock</h5>
                 <p className="card-text">
-                  Manage the probes of windrows
+                  Manage the feedstock
                 </p>
                 {/* <a href="#" class="btn btn-primary">Go somewhere</a> */}
               </div>
@@ -69,14 +69,14 @@ class Dashboard extends Component {
           >
             <div className="card text-center text-white bg-dark mt-5">
               <div className="card-body" id="link">
-                <h5 className="card-title">Reporting and Certifications</h5>
+                <h5 className="card-title">Documentation</h5>
                 <p className="card-text">Generate reports, certifications</p>
                 {/* <a href="#" class="btn btn-primary">Go somewhere</a> */}
               </div>
             </div>
           </Link>
         </div>
-        <div className="container mt-5">
+        {/* <div className="container mt-5">
           <h1 className="display-4"><center>Statistics</center></h1><br></br>
           <h1 className="display-5">Sales</h1><br></br>
           <div>
@@ -92,7 +92,7 @@ class Dashboard extends Component {
           <br></br>
           <br></br>
           <br></br>
-        </div>
+        </div> */}
       </div>
     );
   }
